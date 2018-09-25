@@ -1,48 +1,73 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from 'react'
+import logo from './logo.svg'
+import './App.css'
+import { Grid, Paper } from '@material-ui/core'
 
 class App extends Component {
-  state = { toggle: true };
-  toggleToggle = () => this.setState({ toggle: !this.state.toggle });
+  state = {
+    email: '',
+    password: '',
+  }
+  handleSubmit = e => {
+    e.preventDefault()
+    const { email, password } = this.state
+    const body = JSON.stringify({
+      email,
+      password,
+    })
+    fetch('https://papi-stage.contentmedia.eu/2.0/auth/authenticate', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body,
+    }).then(response => {
+      console.log(response)
+    })
+  }
+  handleInput = e => {
+    const { name, value } = e.target
+    this.setState({
+      [name]: value,
+    })
+  }
   render() {
-    const { toggle } = this.state;
+    const { email, password } = this.state
     return (
-      <div className="App">
-        <header className="App-header">
-          <h1>
-            This app is built with <br />React ⚛️ + Parcel 📦!
-          </h1>
-          <img
-            src={logo}
-            onClick={this.toggleToggle}
-            className={'App-logo ' + (toggle && 'Logo-spin')}
-            alt="logo"
-          />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <A href="https://reactjs.org/">Learn React</A>
-          <A href="https://parceljs.org/getting_started.html">Learn Parcel</A>
-        </header>
-      </div>
-    );
+      <Grid spacing={16} align="center" justify="center">
+        <Grid item xs={6}>
+          <Paper>
+            <Grid container>
+              <Grid item direction="column">
+                <form onSubmit={e => this.handleSubmit(e)}>
+                  <label>
+                    Email:
+                    <input
+                      data-test="email"
+                      type="text"
+                      name="email"
+                      onChange={this.handleInput}
+                    />
+                  </label>
+                  <label>
+                    Password:
+                    <input
+                      data-test="password"
+                      type="password"
+                      name="password"
+                      onChange={this.handleInput}
+                    />
+                  </label>
+                  <button id="login">Login</button>
+                </form>
+              </Grid>
+            </Grid>
+          </Paper>
+        </Grid>
+      </Grid>
+    )
   }
 }
 
-function A(props) {
-  // you can use object spread because babel-preset-react-app is set up for you
-  const { href, children, ...rest } = props;
-  return (
-    <a
-      className="App-link"
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      {...rest}
-    >
-      {children}
-    </a>
-  );
-}
-export default App;
+export default App
