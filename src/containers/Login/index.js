@@ -20,22 +20,38 @@ import {
 import { Visibility, VisibilityOff } from '@material-ui/icons/'
 import { styles } from './styles'
 import logo from '../../assets/elk-logo.svg'
+import { Redirect } from 'react-router-dom'
 
-/* class Login extends Component {
+class Login extends Component {
   state = {
     email: '',
     password: '',
     showPassword: false,
+    isLoading: false,
+    isAuthenticated: false,
+  }
+  componentDidMount() {
+    const key = localStorage.getItem('AUTH_KEY')
+    if (key) {
+      this.setState(state => ({
+        ...state,
+        isAuthenticated: true,
+      }))
+    }
   }
   handleClickShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }))
   }
-  handleSubmit = e => {
+  handleSubmit = async e => {
+    console.log(this.props)
     e.preventDefault()
     const { email, password } = this.state
     const body = JSON.stringify({
       email,
       password,
+    })
+    this.setState({
+      isLoading: true,
     })
     fetch('https://papi-stage.contentmedia.eu/2.0/auth/authenticate', {
       method: 'POST',
@@ -44,18 +60,35 @@ import logo from '../../assets/elk-logo.svg'
         'Content-Type': 'application/json',
       },
       body,
-    }).then(response => {
-      console.log(response)
     })
+      .then(async response => {
+        const data = await response.json()
+        const { status } = response
+        return { data, status }
+      })
+      .then(response => {
+        console.log(response.data)
+        localStorage.setItem('AUTH_KEY', response.data.partnersession)
+        this.setState({
+          isAuthenticated: true,
+        })
+      })
   }
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value })
   }
   render() {
-    const { email, password, showPassword } = this.state
+    const {
+      email,
+      password,
+      showPassword,
+      isLoading,
+      isAuthenticated,
+    } = this.state
     const { classes, theme } = this.props
     return (
       <MuiThemeProvider theme={theme}>
+        {isAuthenticated && <Redirect to="/" />}
         <main className={classes.root}>
           <CssBaseline />
           <Grid container alignItems={'center'} justify="center">
@@ -125,6 +158,7 @@ import logo from '../../assets/elk-logo.svg'
                   >
                     Sign In
                   </Button>
+                  {isLoading && <p>Loading, please wait...</p>}
                 </CardContent>
               </Card>
             </Grid>
@@ -133,7 +167,6 @@ import logo from '../../assets/elk-logo.svg'
       </MuiThemeProvider>
     )
   }
-} */
+}
 
-const LoginFunc = () => <div>Login goes here</div>
-export default LoginFunc
+export default withStyles(styles)(Login)
