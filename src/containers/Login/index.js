@@ -1,5 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { login } from '../../modules/reducers/auth/index'
 import {
   Grid,
   Paper,
@@ -27,17 +30,6 @@ class Login extends Component {
     email: '',
     password: '',
     showPassword: false,
-    isLoading: false,
-    isAuthenticated: false,
-  }
-  componentDidMount() {
-    const key = localStorage.getItem('AUTH_KEY')
-    if (key) {
-      this.setState(state => ({
-        ...state,
-        isAuthenticated: true,
-      }))
-    }
   }
   handleClickShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }))
@@ -46,49 +38,26 @@ class Login extends Component {
     console.log(this.props)
     e.preventDefault()
     const { email, password } = this.state
-    const body = JSON.stringify({
+    this.props.login({
       email,
       password,
     })
-    this.setState({
-      isLoading: true,
-    })
-    fetch('https://papi-stage.contentmedia.eu/2.0/auth/authenticate', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body,
-    })
-      .then(async response => {
-        const data = await response.json()
-        const { status } = response
-        return { data, status }
-      })
-      .then(response => {
-        console.log(response.data)
-        localStorage.setItem('AUTH_KEY', response.data.partnersession)
-        this.setState({
-          isAuthenticated: true,
-        })
-      })
   }
   handleChange = prop => event => {
     this.setState({ [prop]: event.target.value })
   }
   render() {
+    const { email, password, showPassword } = this.state
     const {
-      email,
-      password,
-      showPassword,
-      isLoading,
-      isAuthenticated,
-    } = this.state
+      auth: { isLoading, isAuthenticated },
+    } = this.props
     const { classes, theme } = this.props
+    console.log(this.state)
+
     return (
-      <MuiThemeProvider theme={theme}>
-        {isAuthenticated && <Redirect to="/" />}
+      <Fragment>
+        {console.log('Redirect from Login') ||
+          (isAuthenticated && <Redirect to="/" />)}
         <main className={classes.root}>
           <CssBaseline />
           <Grid container alignItems={'center'} justify="center">
@@ -136,9 +105,9 @@ class Login extends Component {
                             onClick={this.handleClickShowPassword}
                           />
                           {this.state.showPassword ? (
-                            <VisibilityOff />
-                          ) : (
                             <Visibility />
+                          ) : (
+                            <VisibilityOff />
                           )}
                         </InputAdornment>
                       }
@@ -164,9 +133,24 @@ class Login extends Component {
             </Grid>
           </Grid>
         </main>
-      </MuiThemeProvider>
+      </Fragment>
     )
   }
 }
 
-export default withStyles(styles)(Login)
+const mapStateToProps = state => ({
+  auth: state.auth,
+})
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(
+    {
+      login,
+    },
+    dispatch
+  )
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(Login))
