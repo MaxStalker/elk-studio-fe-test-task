@@ -1,29 +1,27 @@
 import React, { Component } from 'react'
 import { Switch, Route, Router } from 'react-router-dom'
+import { connect } from 'react-redux'
 import Login from '../Login'
 import Home from '../Home'
 import RoundList from '../RoundList'
 import PrivateRoute from '../../components/PrivateRoute'
 import createBrowserHistory from 'history/createBrowserHistory'
+import { createMuiTheme } from '@material-ui/core/styles'
+import { blue } from '@material-ui/core/colors'
 
 const history = createBrowserHistory()
+const theme = createMuiTheme({
+  palette: {
+    primary: blue,
+    secondary: blue,
+  },
+})
 
 class App extends Component {
-  constructor(props) {
-    super(props)
-    const key = localStorage.getItem('AUTH_KEY')
-    this.state = {}
-    if (key) {
-      this.state = {
-        isAuthenticated: true,
-        key,
-      }
-    }
-  }
-  componentDidMount() {}
   render() {
-    const { isAuthenticated } = this.state
-    console.log(this.state)
+    const {
+      auth: { isAuthenticated },
+    } = this.props
     return (
       <Router history={history}>
         <Switch>
@@ -38,5 +36,10 @@ class App extends Component {
     )
   }
 }
-
-export default App
+const mapStateToProps = state => ({
+  auth: state.auth,
+})
+export default connect(
+  mapStateToProps,
+  null
+)(App)
