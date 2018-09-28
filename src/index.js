@@ -2,15 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './containers/App/index'
-import Login from './containers/Login'
-import { createMuiTheme } from '@material-ui/core/styles'
-import { blue } from '@material-ui/core/colors'
+import { Provider } from 'react-redux'
+import store from './modules/store'
 
-/* const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-    secondary: blue,
-  },
-}) */
-
-ReactDOM.render(<App />, document.getElementById('root'))
+const appRoot = document.getElementById('root')
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  appRoot
+)
