@@ -1,9 +1,10 @@
 import { createActionThunk } from 'redux-thunk-actions'
 import request from 'superagent'
+import { AUTHENTICATE_URL } from '../../../helpers/api'
 
 export const loginAction = async body => {
   return request
-    .post('https://papi-stage.contentmedia.eu/2.0/auth/authenticate')
+    .post(AUTHENTICATE_URL)
     .set('Accept', 'application/json, text/plain, */*')
     .set('Content-Type', 'application/json; charset=UTF-8')
     .send(body)
@@ -11,10 +12,11 @@ export const loginAction = async body => {
 
 export const login = createActionThunk('LOGIN', body => loginAction(body))
 
+const key = localStorage.getItem('AUTH_KEY')
 export const initialState = {
-  isAuthenticated: false,
+  isAuthenticated: key === undefined,
   isLoading: false,
-  key: '',
+  key: key || '',
 }
 export default (state = initialState, action) => {
   switch (action.type) {
