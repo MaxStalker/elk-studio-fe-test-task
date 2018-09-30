@@ -11,15 +11,28 @@ export const loginAction = async body => {
 }
 
 export const login = createActionThunk('LOGIN', body => loginAction(body))
+export const logout = () => dispatch => {
+  localStorage.removeItem('AUTH_KEY')
+  dispatch({
+    type: 'LOGOUT',
+  })
+}
 
 const key = localStorage.getItem('AUTH_KEY')
 export const initialState = {
-  isAuthenticated: key === undefined,
+  isAuthenticated: Boolean(key),
   isLoading: false,
   key: key || '',
 }
 export default (state = initialState, action) => {
   switch (action.type) {
+    case 'LOGOUT': {
+      return {
+        ...state,
+        isAuthenticated: false,
+        key: '',
+      }
+    }
     case 'LOGIN_STARTED': {
       return {
         ...state,
