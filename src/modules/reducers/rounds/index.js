@@ -34,7 +34,12 @@ export const massageRoundsData = data => {
     (acc, round) => {
       const { id } = round
       acc.list.push(id)
-      acc.byId[id] = round
+      acc.byId[id] = {
+        ...round,
+        formated: {
+          created: new Date(round.created).toUTCString(),
+        },
+      }
       return acc
     },
     { byId: {}, list: [] }
