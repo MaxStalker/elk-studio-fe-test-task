@@ -1,3 +1,4 @@
+import logo from '../../assets/elk-logo.svg'
 export const styles = theme => ({
   root: {
     display: 'flex',
@@ -9,6 +10,18 @@ export const styles = theme => ({
     left: 0,
     right: 0,
     bottom: 0,
+    backgroundColor: '#c2cdd6',
+  },
+  backgroundOverlay: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    zIndex: -1,
+    opacity: 0.1,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '100% 100%',
+    backgroundImage: `url(${logo})`,
+    transform: 'rotate(-15deg) scale(1.2, 1.2)',
   },
   margin: {
     margin: theme.spacing.unit,
