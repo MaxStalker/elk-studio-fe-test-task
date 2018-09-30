@@ -52,17 +52,19 @@ class Login extends Component {
       auth: { isLoading, isAuthenticated },
     } = this.props
     const { classes, theme } = this.props
-    console.log(this.state)
+
+    // TODO: Implement error with wrong email or password
 
     return (
       <Fragment>
         {console.log('Redirect from Login') ||
           (isAuthenticated && <Redirect to="/" />)}
         <main className={classes.root}>
+          <div className={classes.backgroundOverlay} />
           <CssBaseline />
           <Grid container alignItems={'center'} justify="center">
-            <Grid item xs={5}>
-              <Card>
+            <Grid item xl={3} lg={4} md={5} xs={10}>
+              <Card elevation={3}>
                 <div
                   className={classNames(classes.backdrop)}
                   title={'Elk Studios'}
@@ -103,12 +105,13 @@ class Login extends Component {
                           <IconButton
                             aria-label="Toggle password visibiity"
                             onClick={this.handleClickShowPassword}
-                          />
-                          {this.state.showPassword ? (
-                            <Visibility />
-                          ) : (
-                            <VisibilityOff />
-                          )}
+                          >
+                            {this.state.showPassword ? (
+                              <Visibility />
+                            ) : (
+                              <VisibilityOff />
+                            )}
+                          </IconButton>
                         </InputAdornment>
                       }
                       inputProps={{
