@@ -1,44 +1,21 @@
 import React, { Component, Fragment } from 'react'
+import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchRounds } from './../../modules/reducers/rounds/index'
+import { fetchRounds } from './../../modules/reducers/rounds'
+import { logout } from './../../modules/reducers/auth'
 import {
+  Grid,
   Paper,
   Table,
-  TableHead,
   TableBody,
-  TableRow,
+  CircularProgress,
   withStyles,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
 } from '@material-ui/core'
-import { Lock, AccountCircle } from '@material-ui/icons'
-import TableCell from './StyledTableCell'
-
-const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
-  grow: {
-    flexGrow: 1,
-  },
-  table: {
-    minWidth: 700,
-  },
-  row: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.background.default,
-    },
-  },
-  menuButton: {
-    marginLeft: -12,
-    marginRight: 20,
-  },
-})
+import { styles } from './styles'
+import RoundRow from '../../components/RoundRow'
+import TableHeadRenderer from './TableHeadRenderer'
+import AppBarRenderer from './AppBarRenderer'
 
 class RoundList extends Component {
   componentDidMount() {
@@ -48,97 +25,41 @@ class RoundList extends Component {
       operatorId: 7,
     })
   }
-  renderStatus(status) {
-    switch (status) {
-      case 'CLOSED': {
-        return (
-          <span title={status}>
-            <Lock color={'error'} />
-          </span>
-        )
-      }
-      default: {
-        return status
-      }
-    }
-  }
-  renderRoundRow(round, key) {
-    const { classes } = this.props
-    return (
-      <TableRow key={key} className={classes.row}>
-        <TableCell>{round.id}</TableCell>
-        <TableCell>{round.operatorId}</TableCell>
-        <TableCell numeric>{round.gameId}</TableCell>
-        <TableCell>{round.gameName}</TableCell>
-        <TableCell numeric>{round.accountId}</TableCell>
-        <TableCell>{this.renderStatus(round.status)}</TableCell>
-        <TableCell>{round.purchaseMode}</TableCell>
-        <TableCell>{round.clientMode}</TableCell>
-        <TableCell numeric>{`${round.currency} ${round.totalBet}`}</TableCell>
-        <TableCell numeric>{`${round.currency} ${round.totalWin}`}</TableCell>
-        <TableCell>{round.feature.toString()}</TableCell>
-        <TableCell>{round.competitionAffected.toString()}</TableCell>
-        <TableCell>{round.created}</TableCell>
-      </TableRow>
-    )
-  }
   renderLoading() {
     return (
       <div>
-        <CircularProgress color="secondary" />
+        <CircularProgress color="primary" />
         <p>Loading data, please wait...</p>
       </div>
     )
   }
   render() {
     const { isLoading, roundsById, roundsList } = this.props
+    const { logout } = this.props
     const { classes } = this.props
     return (
       <Fragment>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography
-              variant="title"
-              color="inherit"
-              className={classes.grow}
-            >
-              Rounds List
-            </Typography>
-            <IconButton
-              aria-owns={open ? 'menu-appbar' : null}
-              aria-haspopup="true"
-              onClick={this.handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Paper className={classes.root}>
-          {isLoading ? <p>Loading data, please wait...</p> : null}
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Id</TableCell>
-                <TableCell>Operator Id</TableCell>
-                <TableCell>GameId</TableCell>
-                <TableCell>Game Name</TableCell>
-                <TableCell numeric>Account Id</TableCell>
-                <TableCell>Status</TableCell>
-                <TableCell>Purchase Mode</TableCell>
-                <TableCell>Client Mode</TableCell>
-                <TableCell numeric>Total Bet</TableCell>
-                <TableCell numeric>Total Win</TableCell>
-                <TableCell>Feature</TableCell>
-                <TableCell>Competition Affected</TableCell>
-                <TableCell>Created</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {roundsList.map(id => this.renderRoundRow(roundsById[id], id))}
-            </TableBody>
-          </Table>
-        </Paper>
+        <AppBarRenderer actions={{ logout }} />
+        <Grid container className={classNames(classes.contentPading)}>
+          <Paper
+            className={classNames(classes.root)}
+            align={'center'}
+            justify={'center'}
+          >
+            {isLoading ? (
+              this.renderLoading()
+            ) : (
+              <Table className={classes.table}>
+                <TableHeadRenderer />
+                <TableBody>
+                  {roundsList.map(id => (
+                    <RoundRow round={roundsById[id]} key={id} />
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </Paper>
+        </Grid>
       </Fragment>
     )
   }
@@ -150,7 +71,7 @@ const mapStateToProps = state => ({
   roundsList: state.rounds.list,
 })
 const mapDispatchToProps = dispatch =>
-  bindActionCreators({ fetchRounds }, dispatch)
+  bindActionCreators({ fetchRounds, logout }, dispatch)
 export default connect(
   mapStateToProps,
   mapDispatchToProps
