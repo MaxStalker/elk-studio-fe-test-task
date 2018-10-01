@@ -1,4 +1,5 @@
-import React, { Component, Fragment } from 'react'
+//@flow
+import React, { Component, Fragment, type Node } from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -16,8 +17,18 @@ import { styles } from './styles'
 import RoundRow from '../../components/RoundRow'
 import TableHeadRenderer from './TableHeadRenderer'
 import AppBarRenderer from './AppBarRenderer'
+import { type FetchRoundsParams } from '../../types'
 
-class RoundList extends Component {
+type Props = {
+  fetchRounds: (params: FetchRoundsParams) => void,
+  logout: () => void,
+  classes: any,
+  isLoading: boolean,
+  roundsById: {},
+  roundsList: [],
+}
+
+class RoundList extends Component<Props> {
   componentDidMount() {
     this.props.fetchRounds({
       accountId: 60137,
@@ -52,9 +63,11 @@ class RoundList extends Component {
               <Table className={classes.table}>
                 <TableHeadRenderer />
                 <TableBody>
-                  {roundsList.map(id => (
-                    <RoundRow round={roundsById[id]} key={id} />
-                  ))}
+                  {roundsList.map(
+                    (id: number): Node => (
+                      <RoundRow round={roundsById[id]} key={id} />
+                    )
+                  )}
                 </TableBody>
               </Table>
             )}

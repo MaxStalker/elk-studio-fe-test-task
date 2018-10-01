@@ -1,3 +1,4 @@
+// @flow
 import React from 'react'
 import { TableHead, TableRow, withStyles } from '@material-ui/core'
 import TableCell from '../../components/StyledTableCell'

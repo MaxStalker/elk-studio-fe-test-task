@@ -1,8 +1,10 @@
+// @flow
 import { createActionThunk } from 'redux-thunk-actions'
 import request from 'superagent'
 import { ROUND_LIST_URL } from './../../../helpers/api'
+import { type FetchRoundsParams, type Round } from '../../../types'
 
-export const buildQuery = args => {
+export const buildQuery = (args: {}) => {
   let query = '?'
   for (const key in args) {
     if (args.hasOwnProperty(key)) {
@@ -12,26 +14,32 @@ export const buildQuery = args => {
   return query.length === 1 ? '' : query.slice(0, -1)
 }
 
-export const fetchRoundsAction = async params => {
-  const { accountId, dateFrom, operatorId } = params
+export const fetchRoundsAction = async (params: FetchRoundsParams): any => {
   const key = localStorage.getItem('AUTH_KEY')
   if (!key) {
     throw 'Key is not set or expired'
   }
   return request
     .get(ROUND_LIST_URL)
-    .query({ accountId, dateFrom, operatorId })
+    .query(params)
     .set('Accept', 'application/json, text/plain, */*')
     .set('Authorization', key)
 }
 
-export const fetchRounds = createActionThunk('FETCH_ROUNDS', body =>
-  fetchRoundsAction(body)
+type ThunkActionCreator = () => any
+type ThunkAction = ({}) => void
+export const fetchRounds: ThunkActionCreator = createActionThunk(
+  'FETCH_ROUNDS',
+  (body: {}): ThunkAction => fetchRoundsAction(body)
 )
 
-export const massageRoundsData = data => {
+type RoundsData = {
+  byId: {},
+  list: Array<number>,
+}
+export const massageRoundsData = (data: Array<Round>): RoundsData => {
   return data.reduce(
-    (acc, round) => {
+    (acc: RoundsData, round: Round): RoundsData => {
       const { id } = round
       acc.list.push(id)
       acc.byId[id] = {
@@ -52,7 +60,13 @@ export const initialState = {
   list: [],
 }
 
-export default (state = initialState, action) => {
+type State = {
+  isLoading: boolean,
+  byId: {},
+  list: Array<Round>,
+}
+
+export default (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'FETCH_ROUNDS_STARTED': {
       return {
@@ -73,7 +87,9 @@ export default (state = initialState, action) => {
       }
     }
     case 'FETCH_ROUNDS_FAILED': {
-      const { error } = action
+      const {
+        error: {},
+      } = action
       return {
         ...state,
         isLoading: false,

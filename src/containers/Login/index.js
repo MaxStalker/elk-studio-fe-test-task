@@ -1,3 +1,4 @@
+// @flow
 import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
@@ -25,7 +26,25 @@ import { styles } from './styles'
 import logo from '../../assets/elk-logo.svg'
 import { Redirect } from 'react-router-dom'
 
-class Login extends Component {
+type Props = {
+  classes: any,
+  theme: any,
+  login: ({}) => void,
+  auth: {
+    isLoading: boolean,
+    isAuthenticated: boolean,
+  },
+}
+
+type State = {
+  email: string,
+  password: string,
+  showPassword: boolean,
+}
+
+type ChangeMethod = (SyntheticEvent<HTMLInputElement>) => void
+
+class Login extends Component<Props, State> {
   state = {
     email: '',
     password: '',
@@ -34,16 +53,17 @@ class Login extends Component {
   handleClickShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }))
   }
-  handleSubmit = async e => {
-    console.log(this.props)
+  handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>): Promise => {
     e.preventDefault()
     const { email, password } = this.state
-    this.props.login({
+    return this.props.login({
       email,
       password,
     })
   }
-  handleChange = prop => event => {
+  handleChange = (prop): ChangeMethod => (
+    event: SyntheticEvent<HTMLInputElement>
+  ): void => {
     this.setState({ [prop]: event.target.value })
   }
   render() {

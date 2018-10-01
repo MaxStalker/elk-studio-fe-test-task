@@ -1,8 +1,14 @@
+// @flow
 import { createActionThunk } from 'redux-thunk-actions'
 import request from 'superagent'
 import { AUTHENTICATE_URL } from '../../../helpers/api'
+import { type Dispatch, type Action } from '../../../types'
 
-export const loginAction = async body => {
+type LoginBody = {
+  email: string,
+  password: string,
+}
+export const loginAction = async (body: LoginBody): any => {
   return request
     .post(AUTHENTICATE_URL)
     .set('Accept', 'application/json, text/plain, */*')
@@ -11,7 +17,7 @@ export const loginAction = async body => {
 }
 
 export const login = createActionThunk('LOGIN', body => loginAction(body))
-export const logout = () => dispatch => {
+export const logout = () => (dispatch: Dispatch) => {
   localStorage.removeItem('AUTH_KEY')
   dispatch({
     type: 'LOGOUT',
@@ -19,12 +25,20 @@ export const logout = () => dispatch => {
 }
 
 const key = localStorage.getItem('AUTH_KEY')
+
+type State = {
+  isAuthenticated: boolean,
+  isLoading: boolean,
+  key: string,
+}
+
 export const initialState = {
   isAuthenticated: Boolean(key),
   isLoading: false,
   key: key || '',
 }
-export default (state = initialState, action) => {
+
+export default (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'LOGOUT': {
       return {

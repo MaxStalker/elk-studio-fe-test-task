@@ -1,5 +1,5 @@
-import React from 'react'
-import classNames from 'classnames'
+// @flow
+import React, { type Node } from 'react'
 import { withStyles } from '@material-ui/core'
 import { styles } from './styles'
 import { TableRow } from '@material-ui/core'
@@ -12,8 +12,11 @@ import {
   CheckCircle,
 } from '@material-ui/icons'
 import TableCell from '../StyledTableCell'
+import { type Round } from '../../types'
 
-const renderStatus = status => {
+type Status = string | Node
+
+const renderStatus = (status: string): Status => {
   switch (status) {
     case 'CLOSED': {
       return (
@@ -28,7 +31,9 @@ const renderStatus = status => {
   }
 }
 
-const renderClient = client => {
+type Client = string | Node
+
+const renderClient = (client: string): Client => {
   switch (client) {
     case 'DESKTOP': {
       return (
@@ -50,13 +55,22 @@ const renderClient = client => {
   }
 }
 
-const renderBoolean = bool => {
-  return Boolean(bool) ? <Check color={'primary'} /> : <Close color={'error'} />
+const renderBoolean = (condition: boolean): Node => {
+  return Boolean(condition) ? (
+    <Check color={'primary'} />
+  ) : (
+    <Close color={'error'} />
+  )
 }
 
-const RoundRow = props => {
-  const { round, key } = props
-  const { classes } = props
+type Props = {
+  round: Round,
+  key: string,
+  classes: any,
+}
+
+const RoundRow = (props: Props): Node => {
+  const { round, key, classes } = props
   return (
     <TableRow key={key} className={classes.row}>
       <TableCell>{renderStatus(round.status)}</TableCell>

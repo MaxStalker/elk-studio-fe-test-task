@@ -1,3 +1,4 @@
+// @flow
 import React, { Component } from 'react'
 import { Switch, Route, Router } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -16,7 +17,13 @@ const theme = createMuiTheme({
   },
 })
 
-class App extends Component {
+type Props = {
+  auth: {
+    isAuthenticated: boolean,
+  },
+}
+
+class App extends Component<Props> {
   render() {
     const {
       auth: { isAuthenticated },
@@ -26,11 +33,11 @@ class App extends Component {
         <Router history={history}>
           <Switch>
             <Route path="/login" component={Login} />
-            <PrivateRoute
+            {/*             <PrivateRoute
               path="/"
               isAuthenticated={isAuthenticated}
               component={RoundList}
-            />
+            /> */}
           </Switch>
         </Router>
       </MuiThemeProvider>
