@@ -1,6 +1,9 @@
 export type Action = { type: string, payload?: {}, error?: {} }
 export type Dispatch = (action: Action) => void
 
+type ThunkActionCreator = () => any
+type ThunkAction = ({}) => any
+
 type FetchRoundsParams = {
   accountId: number,
   dateFrom: string,
