@@ -1,6 +1,9 @@
 [ignore]
+.*/.cache/*
+.*/.history/*
 
 [include]
+.*/src/*
 
 [libs]
 
@@ -9,3 +12,6 @@
 [options]
 
 [strict]
+
+[untyped]
+.*/node_modules/
