@@ -18,7 +18,6 @@ import {
   Card,
   CardMedia,
   CardContent,
-  MuiThemeProvider,
   CssBaseline,
 } from '@material-ui/core'
 import { Visibility, VisibilityOff } from '@material-ui/icons/'
@@ -83,6 +82,7 @@ class Login extends Component<Props, State> {
         bottomMargin: {},
         bottomMargin2: {},
         formContainer: {},
+        submit: {},
       },
       theme: {},
     } = this.props
@@ -159,7 +159,10 @@ class Login extends Component<Props, State> {
                     fullWidth
                     variant="raised"
                     color="primary"
-                    className={classNames(styles.submit, styles.bottomMargin2)}
+                    className={classNames(
+                      classes.submit,
+                      classes.bottomMargin2,
+                    )}
                     onClick={this.handleSubmit}
                   >
                     Sign In

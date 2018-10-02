@@ -16,7 +16,7 @@ const theme: {} = createMuiTheme(
       primary: blue,
       secondary: grey,
     },
-  }: { palette: { primary: {}, secondary: {} } }),
+  }: Theme),
 )
 
 type Props = {
@@ -46,7 +46,10 @@ class App extends Component<Props> {
     )
   }
 }
-const mapStateToProps = state => ({
+type State = {
+  auth: {},
+}
+const mapStateToProps = (state: State) => ({
   auth: state.auth,
 })
 export default connect(

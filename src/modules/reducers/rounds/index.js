@@ -2,13 +2,6 @@
 import { createActionThunk } from 'redux-thunk-actions'
 import request from 'superagent'
 import { ROUND_LIST_URL } from './../../../helpers/api'
-import {
-  type FetchRoundsParams,
-  type Round,
-  type Action,
-  type ThunkActionCreator,
-  type ThunkAction,
-} from '../../../types'
 
 export const buildQuery = (args: {}) => {
   let query = '?'
@@ -36,7 +29,7 @@ export const fetchRoundsAction = async (
 
 export const fetchRounds: ThunkActionCreator = createActionThunk(
   'FETCH_ROUNDS',
-  (params: {}): ThunkAction => fetchRoundsAction(params),
+  (params: FetchRoundsParams): Promise<any> => fetchRoundsAction(params),
 )
 
 type RoundsData = {
@@ -93,7 +86,7 @@ export default (state: State = initialState, action: Action) => {
       }
     }
     case 'FETCH_ROUNDS_FAILED': {
-      const { error }: { payload?: {}, type: string, error?: {} } = action
+      const { error }: { error: {} } = action
       return {
         ...state,
         isLoading: false,

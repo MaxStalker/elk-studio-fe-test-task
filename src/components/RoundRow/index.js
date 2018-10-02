@@ -12,7 +12,6 @@ import {
   CheckCircle,
 } from '@material-ui/icons'
 import TableCell from '../StyledTableCell'
-import { type Round } from '../../types'
 
 type Status = string | Node
 
@@ -66,7 +65,11 @@ const renderBoolean = (condition: boolean): Node => {
 type Props = {
   round: Round,
   key: string,
-  classes: any,
+  classes: {
+    emphasis: {},
+    centerAlign: {},
+    row: {},
+  },
 }
 
 const RoundRow = (props: Props): Node => {

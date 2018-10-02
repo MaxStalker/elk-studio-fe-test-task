@@ -1,5 +1,5 @@
 // @flow
-import React from 'react'
+import React, { type Node } from 'react'
 import {
   AppBar,
   Toolbar,
@@ -11,7 +11,17 @@ import { Eject } from '@material-ui/icons'
 import { styles } from './styles'
 import classNames from 'classnames'
 
-const AppBarRenderer = ({ actions: { logout }, classes }) => {
+type Props = {
+  actions: {
+    logout: () => Promise<any>,
+  },
+  classes: {
+    grow: {},
+    appBarTitle: {},
+  },
+}
+
+const AppBarRenderer = ({ actions: { logout }, classes }: Props): Node => {
   return (
     <AppBar position="static">
       <Toolbar>

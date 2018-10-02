@@ -17,12 +17,15 @@ import { styles } from './styles'
 import RoundRow from '../../components/RoundRow'
 import TableHeadRenderer from './TableHeadRenderer'
 import AppBarRenderer from './AppBarRenderer'
-import { type FetchRoundsParams } from '../../types'
 
 type Props = {
   fetchRounds: (params: FetchRoundsParams) => void,
   logout: () => void,
-  classes: any,
+  classes: {
+    contentPading: {},
+    root: {},
+    table: {},
+  },
   isLoading: boolean,
   roundsById: {},
   roundsList: [],
@@ -66,7 +69,7 @@ class RoundList extends Component<Props> {
                   {roundsList.map(
                     (id: number): Node => (
                       <RoundRow round={roundsById[id]} key={id} />
-                    )
+                    ),
                   )}
                 </TableBody>
               </Table>
@@ -77,7 +80,15 @@ class RoundList extends Component<Props> {
     )
   }
 }
-const mapStateToProps = state => ({
+type State = {
+  auth: {},
+  rounds: {
+    isLoading: boolean,
+    byId: {},
+    list: [],
+  },
+}
+const mapStateToProps = (state: State): {} => ({
   auth: state.auth,
   isLoading: state.rounds.isLoading,
   roundsById: state.rounds.byId,
@@ -87,5 +98,5 @@ const mapDispatchToProps = dispatch =>
   bindActionCreators({ fetchRounds, logout }, dispatch)
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(withStyles(styles)(RoundList))

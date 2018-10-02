@@ -1,5 +1,16 @@
+//@flow
 import logo from '../../assets/elk-logo.svg'
-export const styles = (theme: {}) => ({
+type ThemeType = {
+  spacing: {
+    unit: number,
+  },
+  palette: {
+    background: {
+      default: string,
+    },
+  },
+}
+export const styles = (theme: ThemeType): {} => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',

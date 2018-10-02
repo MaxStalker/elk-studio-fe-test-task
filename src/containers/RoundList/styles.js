@@ -1,4 +1,15 @@
-export const styles = theme => ({
+//@flow
+type ThemeType = {
+  spacing: {
+    unit: number,
+  },
+  palette: {
+    background: {
+      default: string,
+    },
+  },
+}
+export const styles = (theme: ThemeType): {} => ({
   root: {
     width: '100%',
     overflowX: 'auto',

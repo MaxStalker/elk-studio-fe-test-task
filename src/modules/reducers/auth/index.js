@@ -2,7 +2,6 @@
 import { createActionThunk } from 'redux-thunk-actions'
 import request from 'superagent'
 import { AUTHENTICATE_URL } from '../../../helpers/api'
-import { type Dispatch, type Action } from '../../../types'
 
 type LoginBody = {
   email: string,
@@ -38,7 +37,9 @@ export const initialState = {
   key: key || '',
 }
 
-export default (state: State = initialState, action: Action) => {
+type Action2 = { type: string, payload?: { body?: {} }, error?: {} }
+
+export default (state: State = initialState, action: Action2) => {
   switch (action.type) {
     case 'LOGOUT': {
       return {
@@ -54,9 +55,8 @@ export default (state: State = initialState, action: Action) => {
       }
     }
     case 'LOGIN_SUCCEEDED': {
-      const {
-        body: { partnersession },
-      } = action.payload
+      const { body } = action.payload
+      const { partnersession } = body
       localStorage.setItem('AUTH_KEY', partnersession)
       return {
         ...state,

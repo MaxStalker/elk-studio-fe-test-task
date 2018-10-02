@@ -1,9 +1,17 @@
 // @flow
-import React from 'react'
+import React, { type Node } from 'react'
 import { TableHead, TableRow, withStyles } from '@material-ui/core'
 import TableCell from '../../components/StyledTableCell'
 import { styles } from '../../components/RoundRow/styles'
-const TableHeadRenderer = ({ classes }) => {
+
+type Props = {
+  classes: {
+    centerAlign: {},
+  },
+}
+
+const TableHeadRenderer = (props: Props): Node => {
+  const { classes } = props
   return (
     <TableHead>
       <TableRow>
