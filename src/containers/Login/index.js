@@ -53,7 +53,7 @@ class Login extends Component<Props, State> {
   handleClickShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }))
   }
-  handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>): Promise => {
+  handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>): Promise<any> => {
     e.preventDefault()
     const { email, password } = this.state
     return this.props.login({
@@ -62,16 +62,30 @@ class Login extends Component<Props, State> {
     })
   }
   handleChange = (prop): ChangeMethod => (
-    event: SyntheticEvent<HTMLInputElement>
+    event: SyntheticEvent<HTMLInputElement>,
   ): void => {
-    this.setState({ [prop]: event.target.value })
+    ;(event.currentTarget: HTMLInputElement)
+    this.setState({ [prop]: event.currentTarget.value })
   }
   render() {
     const { email, password, showPassword } = this.state
     const {
       auth: { isLoading, isAuthenticated },
     } = this.props
-    const { classes, theme } = this.props
+    const {
+      classes,
+      theme,
+    }: {
+      classes: {
+        root: {},
+        backdrop: {},
+        backgroundOverlay: {},
+        bottomMargin: {},
+        bottomMargin2: {},
+        formContainer: {},
+      },
+      theme: {},
+    } = this.props
 
     // TODO: Implement error with wrong email or password
 
@@ -161,19 +175,19 @@ class Login extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state: { auth: {} }) => ({
   auth: state.auth,
 })
 
-const mapDispatchToProps = dispatch =>
+const mapDispatchToProps = (dispatch: () => any) =>
   bindActionCreators(
     {
       login,
     },
-    dispatch
+    dispatch,
   )
 
 export default connect(
   mapStateToProps,
-  mapDispatchToProps
+  mapDispatchToProps,
 )(withStyles(styles)(Login))

@@ -1,5 +1,5 @@
 import logo from '../../assets/elk-logo.svg'
-export const styles = theme => ({
+export const styles = (theme: {}) => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',

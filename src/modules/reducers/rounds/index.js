@@ -2,7 +2,13 @@
 import { createActionThunk } from 'redux-thunk-actions'
 import request from 'superagent'
 import { ROUND_LIST_URL } from './../../../helpers/api'
-import { type FetchRoundsParams, type Round } from '../../../types'
+import {
+  type FetchRoundsParams,
+  type Round,
+  type Action,
+  type ThunkActionCreator,
+  type ThunkAction,
+} from '../../../types'
 
 export const buildQuery = (args: {}) => {
   let query = '?'
@@ -14,7 +20,9 @@ export const buildQuery = (args: {}) => {
   return query.length === 1 ? '' : query.slice(0, -1)
 }
 
-export const fetchRoundsAction = async (params: FetchRoundsParams): any => {
+export const fetchRoundsAction = async (
+  params: FetchRoundsParams,
+): Promise<any> => {
   const key = localStorage.getItem('AUTH_KEY')
   if (!key) {
     throw 'Key is not set or expired'
@@ -26,11 +34,9 @@ export const fetchRoundsAction = async (params: FetchRoundsParams): any => {
     .set('Authorization', key)
 }
 
-type ThunkActionCreator = () => any
-type ThunkAction = ({}) => void
 export const fetchRounds: ThunkActionCreator = createActionThunk(
   'FETCH_ROUNDS',
-  (body: {}): ThunkAction => fetchRoundsAction(body)
+  (params: {}): ThunkAction => fetchRoundsAction(params),
 )
 
 type RoundsData = {
@@ -50,7 +56,7 @@ export const massageRoundsData = (data: Array<Round>): RoundsData => {
       }
       return acc
     },
-    { byId: {}, list: [] }
+    { byId: {}, list: [] },
   )
 }
 
@@ -87,9 +93,7 @@ export default (state: State = initialState, action: Action) => {
       }
     }
     case 'FETCH_ROUNDS_FAILED': {
-      const {
-        error: {},
-      } = action
+      const { error }: { payload?: {}, type: string, error?: {} } = action
       return {
         ...state,
         isLoading: false,

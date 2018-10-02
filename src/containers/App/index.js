@@ -10,12 +10,14 @@ import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles'
 import { blue, grey } from '@material-ui/core/colors'
 
 const history = createBrowserHistory()
-const theme = createMuiTheme({
-  palette: {
-    primary: blue,
-    secondary: grey,
-  },
-})
+const theme: {} = createMuiTheme(
+  ({
+    palette: {
+      primary: blue,
+      secondary: grey,
+    },
+  }: { palette: { primary: {}, secondary: {} } }),
+)
 
 type Props = {
   auth: {
@@ -33,11 +35,11 @@ class App extends Component<Props> {
         <Router history={history}>
           <Switch>
             <Route path="/login" component={Login} />
-            {/*             <PrivateRoute
+            <PrivateRoute
               path="/"
               isAuthenticated={isAuthenticated}
               component={RoundList}
-            /> */}
+            />
           </Switch>
         </Router>
       </MuiThemeProvider>
@@ -49,5 +51,5 @@ const mapStateToProps = state => ({
 })
 export default connect(
   mapStateToProps,
-  null
+  null,
 )(App)
