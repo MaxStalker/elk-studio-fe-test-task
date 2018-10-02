@@ -1,5 +1,3 @@
 declare module 'classnames' {
-  declare module.exports: {
-    classNames(args: Array<any>): string,
-  }
+  declare export default function classNames(...args: Array<any>): string
 }
