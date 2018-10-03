@@ -32,6 +32,7 @@ type Props = {
   auth: {
     isLoading: boolean,
     isAuthenticated: boolean,
+    error?: {},
   },
 }
 
@@ -55,10 +56,19 @@ class Login extends Component<Props, State> {
   handleSubmit = async (e: SyntheticEvent<HTMLButtonElement>): Promise<any> => {
     e.preventDefault()
     const { email, password } = this.state
-    return this.props.login({
-      email,
-      password,
-    })
+    return this.props
+      .login({
+        email,
+        password,
+      })
+      .then(res => {
+        if (res.status === 200) {
+          this.props.history.push('/')
+        }
+      })
+      .catch(error => {
+        console.log(error)
+      })
   }
   handleChange = (prop): ChangeMethod => (
     event: SyntheticEvent<HTMLInputElement>,
@@ -69,7 +79,7 @@ class Login extends Component<Props, State> {
   render() {
     const { email, password, showPassword } = this.state
     const {
-      auth: { isLoading, isAuthenticated },
+      auth: { isLoading, isAuthenticated, error },
     } = this.props
     const {
       classes,
@@ -91,8 +101,6 @@ class Login extends Component<Props, State> {
 
     return (
       <Fragment>
-        {console.log('Redirect from Login') ||
-          (isAuthenticated && <Redirect to="/" />)}
         <main className={classes.root}>
           <div className={classes.backgroundOverlay} />
           <CssBaseline />
@@ -119,6 +127,7 @@ class Login extends Component<Props, State> {
                       onChange={this.handleChange('email')}
                       inputProps={{
                         'aria-label': 'Email',
+                        'data-test': 'email',
                       }}
                     />
                   </FormControl>
@@ -150,10 +159,12 @@ class Login extends Component<Props, State> {
                       }
                       inputProps={{
                         'aria-label': 'Password',
+                        'data-test': 'password',
                       }}
                     />
                   </FormControl>
                   <Button
+                    data-test="btn-login"
                     size="large"
                     type="submit"
                     fullWidth
@@ -168,6 +179,7 @@ class Login extends Component<Props, State> {
                     Sign In
                   </Button>
                   {isLoading && <p>Loading, please wait...</p>}
+                  {error && <p data-test={'form-error'}>{error.msg}</p>}
                 </CardContent>
               </Card>
             </Grid>
