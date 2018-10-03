@@ -4,50 +4,48 @@ describe('Login Page', () => {
   context('Login', () => {
     beforeEach(() => {
       cy.visit('http://localhost:1234/')
+      cy.clearLocalStorage()
     })
-    it('email input should be present on page', () => {
-      cy.get('[data-test=email').should('exist')
-    })
-
-    it('password input should be present on page', () => {
-      cy.get('[data-test=password').should('exist')
-    })
-
-    it('login button should be present', () => {
-      cy.get('#login').should('exist')
+    it('Elements should be on page', () => {
+      cy.get('[data-test=email]').should('exist')
+      cy.get('[data-test=password]').should('exist')
+      cy.get('[data-test=btn-login]').should('exist')
     })
 
-    it('type email', () => {
-      cy.get('input[data-test=email')
+    it('typing should work', () => {
+      cy.get('input[data-test=email]')
         .type(EMAIL)
         .should('have.value', EMAIL)
-    })
 
-    it('type password', () => {
-      cy.get('input[data-test=password')
+      cy.get('input[data-test=password]')
         .type(PASSWORD)
         .should('have.value', PASSWORD)
     })
 
-    it('should display error message on wrong credentials', () => {
-      // Alias the route to wait for its response
-      cy.server()
-      cy.route({
-        metho: 'POST',
-        url: 'https://papi-stage.contentmedia.eu/2.0/auth/authenticate',
-      }).as('loginAction')
+    it('should login', () => {
+      cy.get('input[data-test=email]').type(EMAIL)
+      cy.get('input[data-test=password]').type(PASSWORD)
+      cy.get('[data-test=btn-login]').click()
 
+      cy.wait(1500)
+      cy.url({ timeout: 3000 }).should('eq', 'http://localhost:1234/')
+    })
+
+    it('redirects unauthorized users', () => {
+      cy.url().should('contains', '/login')
+    })
+
+    // TODO: Implement server/route routine instead of simple timeout
+    it('should display error message on wrong credentials', () => {
       cy.get('input[data-test=email]').type('test')
       cy.get('input[data-test=password]').type('test')
-      cy.get('#login').click()
+      cy.get('[data-test=btn-login]').click()
 
-      cy.wait('@loginAction')
-        .its('status')
-        .should('eq', 403)
+      cy.wait(3000)
 
-      cy.get('.error[data-test=form]').should(
+      cy.get('[data-test=form-error]').should(
         'contain',
-        'Access forbidden: invalid username or password'
+        'Access forbidden: invalid username or password',
       )
     })
   })
