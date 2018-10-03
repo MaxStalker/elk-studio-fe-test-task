@@ -1,9 +1,4 @@
 //@flow
-declare type Action = { type: string, payload?: { body?: {} }, error?: {} }
-declare type Dispatch = (action: Action) => void
-
-declare type ThunkActionCreator = () => any
-declare type ThunkAction = ({}) => any
 
 declare type FetchRoundsParams = {
   accountId: number,
