@@ -48,7 +48,7 @@ export const styles = (theme: ThemeType): {} => ({
   },
   textField: {},
   submit: {
-    padding: '40px',
+    padding: theme.spacing.unit * 3,
   },
   formContainer: {
     padding: theme.spacing.unit * 5,
