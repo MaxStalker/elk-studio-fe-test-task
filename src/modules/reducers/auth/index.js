@@ -7,7 +7,32 @@ type LoginBody = {
   email: string,
   password: string,
 }
-export const loginAction = async (body: LoginBody): any => {
+
+type GetState = () => State
+type PromiseAction = Promise<Action>
+type ThunkAction = (dispatch: Dispatch, getState: GetState) => any
+type Dispatch = (
+  action: Action | ThunkAction | PromiseAction | Array<Action>,
+) => any
+type State = {
+  +isAuthenticated: boolean,
+  +isLoading: boolean,
+  +key: string,
+}
+type LogoutAction = { type: 'LOGOUT' }
+type LoginActionStarted = { type: 'LOGIN_STARTED', payload: {} }
+type LoginActionSucceded = {
+  type: 'LOGIN_SUCCEEDED',
+  payload: { body: { partnersession: string } },
+}
+type LoginActionFailed = { type: 'LOGIN_FAILED', payload: {}, error: {} }
+type Action =
+  | LogoutAction
+  | LoginActionStarted
+  | LoginActionSucceded
+  | LoginActionFailed
+
+export const loginAction = async (body: LoginBody): Promise<any> => {
   return request
     .post(AUTHENTICATE_URL)
     .set('Accept', 'application/json, text/plain, */*')
@@ -15,7 +40,10 @@ export const loginAction = async (body: LoginBody): any => {
     .send(body)
 }
 
-export const login = createActionThunk('LOGIN', body => loginAction(body))
+export const login = createActionThunk(
+  'LOGIN',
+  (body: LoginBody): Promise<any> => loginAction(body),
+)
 export const logout = () => (dispatch: Dispatch) => {
   localStorage.removeItem('AUTH_KEY')
   dispatch({
@@ -25,21 +53,13 @@ export const logout = () => (dispatch: Dispatch) => {
 
 const key = localStorage.getItem('AUTH_KEY')
 
-type State = {
-  isAuthenticated: boolean,
-  isLoading: boolean,
-  key: string,
-}
-
 export const initialState = {
   isAuthenticated: Boolean(key),
   isLoading: false,
   key: key || '',
 }
 
-type Action2 = { type: string, payload?: { body?: {} }, error?: {} }
-
-export default (state: State = initialState, action: Action2) => {
+export default (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'LOGOUT': {
       return {

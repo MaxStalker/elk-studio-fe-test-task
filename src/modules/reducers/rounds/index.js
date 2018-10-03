@@ -3,7 +3,36 @@ import { createActionThunk } from 'redux-thunk-actions'
 import request from 'superagent'
 import { ROUND_LIST_URL } from './../../../helpers/api'
 
-export const buildQuery = (args: {}) => {
+type GetState = () => State
+type PromiseAction = Promise<Action>
+type ThunkAction = (dispatch: Dispatch, getState: GetState) => any
+type Dispatch = (
+  action: Action | ThunkAction | PromiseAction | Array<Action>,
+) => any
+type RoundsData = {
+  byId: {},
+  list: Array<number>,
+}
+
+type State = {
+  +isLoading: boolean,
+  +byId: {},
+  +list: Array<Round>,
+}
+
+type FetchRoundsStarted = { type: 'FETCH_ROUNDS_STARTED', payload: {} }
+type FetchRoundsSucceded = {
+  type: 'FETCH_ROUNDS_SUCCEEDED',
+  payload: { body: { rounds: Array<Round> } },
+}
+type FetchRoundsFailed = {
+  type: 'FETCH_ROUNDS_FAILED',
+  error: {},
+}
+type Action = FetchRoundsStarted | FetchRoundsSucceded | FetchRoundsFailed
+type ThunkActionCreator = () => any
+
+export const buildQuery = (args: { [key: string]: any }) => {
   let query = '?'
   for (const key in args) {
     if (args.hasOwnProperty(key)) {
@@ -27,15 +56,11 @@ export const fetchRoundsAction = async (
     .set('Authorization', key)
 }
 
-export const fetchRounds: ThunkActionCreator = createActionThunk(
+export const fetchRounds = createActionThunk(
   'FETCH_ROUNDS',
   (params: FetchRoundsParams): Promise<any> => fetchRoundsAction(params),
 )
 
-type RoundsData = {
-  byId: {},
-  list: Array<number>,
-}
 export const massageRoundsData = (data: Array<Round>): RoundsData => {
   return data.reduce(
     (acc: RoundsData, round: Round): RoundsData => {
@@ -59,12 +84,6 @@ export const initialState = {
   list: [],
 }
 
-type State = {
-  isLoading: boolean,
-  byId: {},
-  list: Array<Round>,
-}
-
 export default (state: State = initialState, action: Action) => {
   switch (action.type) {
     case 'FETCH_ROUNDS_STARTED': {
@@ -86,7 +105,7 @@ export default (state: State = initialState, action: Action) => {
       }
     }
     case 'FETCH_ROUNDS_FAILED': {
-      const { error }: { error: {} } = action
+      const { error } = action
       return {
         ...state,
         isLoading: false,
