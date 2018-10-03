@@ -1,24 +1,21 @@
 // @flow
-import { createActionThunk } from 'redux-thunk-actions'
 import request from 'superagent'
+import { createActionThunk } from 'redux-thunk-actions'
 import { AUTHENTICATE_URL } from '../../../helpers/api'
 
-type LoginBody = {
-  email: string,
-  password: string,
+type State = {
+  +isAuthenticated: boolean,
+  +isLoading: boolean,
+  +key: string,
+  error?: {},
 }
-
 type GetState = () => State
 type PromiseAction = Promise<Action>
 type ThunkAction = (dispatch: Dispatch, getState: GetState) => any
 type Dispatch = (
   action: Action | ThunkAction | PromiseAction | Array<Action>,
 ) => any
-type State = {
-  +isAuthenticated: boolean,
-  +isLoading: boolean,
-  +key: string,
-}
+
 type LogoutAction = { type: 'LOGOUT' }
 type LoginActionStarted = { type: 'LOGIN_STARTED', payload: {} }
 type LoginActionSucceded = {
@@ -26,11 +23,17 @@ type LoginActionSucceded = {
   payload: { body: { partnersession: string } },
 }
 type LoginActionFailed = { type: 'LOGIN_FAILED', payload: {}, error: {} }
+
 type Action =
   | LogoutAction
   | LoginActionStarted
   | LoginActionSucceded
   | LoginActionFailed
+
+type LoginBody = {
+  email: string,
+  password: string,
+}
 
 export const loginAction = async (body: LoginBody): Promise<any> => {
   return request
@@ -72,6 +75,7 @@ export default (state: State = initialState, action: Action) => {
       return {
         ...state,
         isLoading: true,
+        error: null,
       }
     }
     case 'LOGIN_SUCCEEDED': {
@@ -86,11 +90,11 @@ export default (state: State = initialState, action: Action) => {
       }
     }
     case 'LOGIN_FAILED': {
-      const { error } = action
+      const { error, payload } = action
       return {
         ...state,
         isLoading: false,
-        error,
+        error: JSON.parse(payload.response.text),
       }
     }
     default: {
