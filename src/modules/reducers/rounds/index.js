@@ -27,7 +27,7 @@ type FetchRoundsSucceded = {
 }
 type FetchRoundsFailed = {
   type: 'FETCH_ROUNDS_FAILED',
-  error: {},
+  payload: {},
 }
 type Action = FetchRoundsStarted | FetchRoundsSucceded | FetchRoundsFailed
 type ThunkActionCreator = () => any
@@ -90,6 +90,7 @@ export default (state: State = initialState, action: Action) => {
       return {
         ...state,
         isLoading: true,
+        error: null,
       }
     }
     case 'FETCH_ROUNDS_SUCCEEDED': {
@@ -105,11 +106,11 @@ export default (state: State = initialState, action: Action) => {
       }
     }
     case 'FETCH_ROUNDS_FAILED': {
-      const { error } = action
+      const { payload } = action
       return {
         ...state,
         isLoading: false,
-        error,
+        error: JSON.parse(payload.response.text),
       }
     }
     default: {
