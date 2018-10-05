@@ -16,6 +16,7 @@ type Dispatch = (
   action: Action | ThunkAction | PromiseAction | Array<Action>,
 ) => any
 
+type ClearError = { type: 'CLEAR_ERROR' }
 type LogoutAction = { type: 'LOGOUT' }
 type LoginActionStarted = { type: 'LOGIN_STARTED', payload: {} }
 type LoginActionSucceded = {
@@ -25,6 +26,7 @@ type LoginActionSucceded = {
 type LoginActionFailed = { type: 'LOGIN_FAILED', payload: {}, error: {} }
 
 type Action =
+  | ClearError
   | LogoutAction
   | LoginActionStarted
   | LoginActionSucceded
@@ -54,6 +56,12 @@ export const logout = () => (dispatch: Dispatch) => {
   })
 }
 
+export const clearError = () => (dispatch: Dispatch) => {
+  dispatch({
+    type: 'CLEAR_ERROR',
+  })
+}
+
 const key = localStorage.getItem('AUTH_KEY')
 
 export const initialState = {
@@ -64,6 +72,12 @@ export const initialState = {
 
 export default (state: State = initialState, action: Action) => {
   switch (action.type) {
+    case 'CLEAR_ERROR': {
+      return {
+        ...state,
+        error: null,
+      }
+    }
     case 'LOGOUT': {
       return {
         ...state,
