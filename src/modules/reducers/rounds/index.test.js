@@ -1,21 +1,23 @@
 import reducer, { fetchRounds, fetchRoundsAction } from './index.js'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
+import { login, loginAction } from '../auth'
 
 const test = {}
 
 describe('Test Reducer', () => {
-  beforeEach(() => {
-    // TODO: populate items here with action creators
+  beforeEach(async () => {
     test.store = createStore(reducer, applyMiddleware(...[thunkMiddleware]))
     localStorage.clear()
-    localStorage.setItem(
-      'AUTH_KEY',
-      'asYtaMY21535YTfyr5VlNB5F43dTTnVCCAl6uIs9hsa5IZbOrd',
-    )
+    let promise = await loginAction({
+      email: 'careers@elk-studios.com',
+      password: 'password',
+    })
+    localStorage.setItem('AUTH_KEY', promise.body.partnersession)
   })
 
   it('shall test fetchRoundsAction', done => {
+    console.log(localStorage.getItem('AUTH_KEY'))
     let promise = fetchRoundsAction({
       accountId: 60137,
       dateFrom: '2018-08-16T00:30:10Z',
@@ -67,10 +69,9 @@ describe('Test Reducer', () => {
     expect(test.store.getState().isLoading).toEqual(true)
     promise.then(done, error => {
       const { status } = error
-      // TODO: Fix response handling
-      expect(status).toEqual(401)
+      expect(status).toEqual(403)
       expect(test.store.getState().isLoading).toEqual(false)
-      expect(test.store.getState().error.status).toEqual(401)
+      expect(test.store.getState().error.code).toEqual(403)
       done()
     })
   })
