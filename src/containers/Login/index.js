@@ -3,7 +3,7 @@ import React, { Component, Fragment } from 'react'
 import classNames from 'classnames'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { login } from '../../modules/reducers/auth/index'
+import { login, clearError } from '../../modules/reducers/auth'
 import {
   Grid,
   Paper,
@@ -70,12 +70,15 @@ class Login extends Component<Props, State> {
         console.log(error)
       })
   }
+
   handleChange = (prop): ChangeMethod => (
     event: SyntheticEvent<HTMLInputElement>,
   ): void => {
-    ;(event.currentTarget: HTMLInputElement)
+    //(event.currentTarget: HTMLInputElement)
     this.setState({ [prop]: event.currentTarget.value })
+    this.props.clearError()
   }
+
   render() {
     const { email, password, showPassword } = this.state
     const {
@@ -97,8 +100,7 @@ class Login extends Component<Props, State> {
       theme: {},
     } = this.props
 
-    // TODO: Implement error with wrong email or password
-
+    // TODO: Validate form on input and disabled button if not all fields are filled
     return (
       <Fragment>
         <main className={classes.root}>
@@ -106,7 +108,7 @@ class Login extends Component<Props, State> {
           <CssBaseline />
           <Grid container alignItems={'center'} justify="center">
             <Grid item xl={3} lg={4} md={5} xs={10}>
-              <Card elevation={3}>
+              <Card elevation={3} className={error ? 'shake' : ''}>
                 <div
                   className={classNames(classes.backdrop)}
                   title={'Elk Studios'}
@@ -164,6 +166,7 @@ class Login extends Component<Props, State> {
                     />
                   </FormControl>
                   <Button
+                    disabled={error}
                     data-test="btn-login"
                     size="large"
                     type="submit"
@@ -176,7 +179,7 @@ class Login extends Component<Props, State> {
                     )}
                     onClick={this.handleSubmit}
                   >
-                    Sign In
+                    {error ? 'Change details and try again' : 'Sign In'}
                   </Button>
                   {isLoading && <p>Loading, please wait...</p>}
                   {error && <p data-test={'form-error'}>{error.msg}</p>}
@@ -198,6 +201,7 @@ const mapDispatchToProps = (dispatch: () => any) =>
   bindActionCreators(
     {
       login,
+      clearError,
     },
     dispatch,
   )
