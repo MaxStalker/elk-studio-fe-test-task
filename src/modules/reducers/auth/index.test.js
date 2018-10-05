@@ -16,7 +16,6 @@ describe('Auth', () => {
     expect(test.store.getState().key).toEqual('')
     promise.then(done, error => {
       const { status } = error
-      // TODO: Fix response handling
       expect(status).toEqual(403)
       expect(test.store.getState().isLoading).toEqual(false)
       expect(test.store.getState().error.code).toEqual(403)
