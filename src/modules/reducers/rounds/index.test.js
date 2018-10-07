@@ -1,9 +1,26 @@
-import reducer, { fetchRounds, fetchRoundsAction } from './index.js'
+import reducer, {
+  fetchRounds,
+  fetchRoundsAction,
+  massageRoundsData,
+} from './index.js'
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { login, loginAction } from '../auth'
 
 const test = {}
+
+describe('Test utility functions', () => {
+  it('shall throw error on empty key', done => {
+    let promise = fetchRoundsAction({
+      accountId: 60137,
+      dateFrom: '2018-08-16T00:30:10Z',
+      operatorId: 7,
+    }).catch(err => {
+      expect(err).toEqual('Key is not set or expired')
+      done()
+    })
+  })
+})
 
 describe('Test Reducer', () => {
   beforeEach(async () => {
@@ -17,7 +34,6 @@ describe('Test Reducer', () => {
   })
 
   it('shall test fetchRoundsAction', done => {
-    console.log(localStorage.getItem('AUTH_KEY'))
     let promise = fetchRoundsAction({
       accountId: 60137,
       dateFrom: '2018-08-16T00:30:10Z',
@@ -74,5 +90,26 @@ describe('Test Reducer', () => {
       expect(test.store.getState().error.code).toEqual(403)
       done()
     })
+  })
+  it('shall update state on FETCH_ROUNDS_SUCCEEDED', () => {
+    const newState = reducer(
+      { isLoading: true, byId: {}, list: [] },
+      {
+        type: 'FETCH_ROUNDS_SUCCEEDED',
+        payload: {
+          body: {
+            rounds: [
+              {
+                id: 'id-1',
+                data: 'test',
+              },
+            ],
+          },
+        },
+      },
+    )
+    expect(newState.isLoading).toEqual(false)
+    expect(newState.list.length).toEqual(1)
+    expect(newState.byId['id-1'].data).toEqual('test')
   })
 })
