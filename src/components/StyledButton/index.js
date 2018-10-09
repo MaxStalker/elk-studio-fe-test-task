@@ -1,6 +1,5 @@
 import React from 'react'
 import { Button, withStyles } from '@material-ui/core'
-import { withProps } from 'recompose'
 
 const StyledButton = withStyles({
   root: {
