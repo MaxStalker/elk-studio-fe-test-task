@@ -26,8 +26,11 @@ export const styles = (theme: ThemeType): {} => ({
       fontWeight: 'bold',
     },
   },
-  contentPading: {
+  contentPadding: {
     padding: theme.spacing.unit * 4,
+  },
+  topPadding: {
+    paddingTop: theme.spacing.unit * 3,
   },
   row: {
     '&:nth-of-type(odd)': {

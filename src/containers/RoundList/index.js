@@ -22,7 +22,7 @@ type Props = {
   fetchRounds: (params: FetchRoundsParams) => void,
   logout: () => void,
   classes: {
-    contentPading: {},
+    contentPadding: {},
     root: {},
     table: {},
   },
@@ -40,8 +40,9 @@ class RoundList extends Component<Props> {
     })
   }
   renderLoading() {
+    const { classes } = this.props
     return (
-      <div>
+      <div className={classNames(classes.topPadding)}>
         <CircularProgress color="primary" />
         <p>Loading data, please wait...</p>
       </div>
@@ -54,7 +55,7 @@ class RoundList extends Component<Props> {
     return (
       <Fragment>
         <AppBarRenderer actions={{ logout }} />
-        <Grid container className={classNames(classes.contentPading)}>
+        <Grid container className={classNames(classes.contentPadding)}>
           <Paper
             className={classNames(classes.root)}
             align={'center'}
