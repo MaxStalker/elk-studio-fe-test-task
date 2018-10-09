@@ -1,6 +1,22 @@
 {
   "name": "elk-studios-fe-test",
-  "version": "0.1.0",
+  "description": "Elk Studios Front-End Developer Test Task",
+  "author": {
+    "name": "Maksim Daunarovich",
+    "email": "max.daunarovich@gmail.com",
+    "url": "https://github.com/MaxStalker"
+  },
+  "keywords": [
+    "cypress",
+    "jest",
+    "react",
+    "redux",
+    "react-router",
+    "material-ui"
+  ],
+  "homepage": "https://github.com/MaxStalker/project#readme",
+  "license": "MIT",
+  "version": "1.0.0",
   "private": true,
   "devDependencies": {
     "cypress": "^3.1.0",
