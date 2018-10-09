@@ -32,16 +32,6 @@ type FetchRoundsFailed = {
 type Action = FetchRoundsStarted | FetchRoundsSucceded | FetchRoundsFailed
 type ThunkActionCreator = () => any
 
-export const buildQuery = (args: { [key: string]: any }) => {
-  let query = '?'
-  for (const key in args) {
-    if (args.hasOwnProperty(key)) {
-      query += `${key}=${args[key]}&`
-    }
-  }
-  return query.length === 1 ? '' : query.slice(0, -1)
-}
-
 export const fetchRoundsAction = async (
   params: FetchRoundsParams,
 ): Promise<any> => {
