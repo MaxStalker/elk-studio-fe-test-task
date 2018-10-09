@@ -1,4 +1,5 @@
-import { buildQuery, massageRoundsData } from './index'
+import { massageRoundsData } from './index'
+import { buildQuery } from './../../../helpers/utils'
 
 describe('Test Utilities - Build Query', () => {
   it('Shall build query for empty string', () => {
@@ -17,7 +18,7 @@ describe('Test Utilities - Build Query', () => {
       operatorId: 7,
     })
     expect(query).toEqual(
-      '?accountId=60137&dateFrom=2018-08-16T00:30:10Z&operatorId=7'
+      '?accountId=60137&dateFrom=2018-08-16T00:30:10Z&operatorId=7',
     )
   })
 })
